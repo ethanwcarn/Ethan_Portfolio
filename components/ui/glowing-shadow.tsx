@@ -311,7 +311,7 @@ export function GlowingShadow({
         }
       `}</style>
 
-      <div className={`glow-container ${className ?? ""}`} style={style} role="button">
+      <div className={`glow-container ${className ?? ""}`} style={style}>
         <span className="glow"></span>
         <div className="glow-content">{children}</div>
       </div>

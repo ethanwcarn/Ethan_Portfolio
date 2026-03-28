@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(\"C:/Users/ethan/Downloads/Graphic_Design_Test/.env.local\":*)",
+      "Bash(vercel --version)",
+      "Bash(printf '%s' '$2b$10$h3/mdk0geMvXZbO9yPowJeE3ixnNsYHpSo6T9g5GMgwhh04SHeC/K')",
+      "Bash(vercel env:*)",
+      "Bash(npm install:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(printf '%s' 'https://2yo8ntgt39tj5egj.public.blob.vercel-storage.com/content.json')"
+    ]
+  }
+}

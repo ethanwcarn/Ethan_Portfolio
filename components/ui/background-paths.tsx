@@ -66,7 +66,7 @@ export function BackgroundPaths({
           transition={{ duration: 2 }}
           className="mx-auto max-w-5xl"
         >
-          <h1 className="mb-8 text-5xl font-bold tracking-tighter sm:text-7xl md:text-8xl">
+          <p className="mb-8 text-5xl font-bold tracking-tighter sm:text-7xl md:text-8xl">
             {words.map((word, wordIndex) => (
               <span key={wordIndex} className="mr-4 inline-block last:mr-0">
                 {word.split("").map((letter, letterIndex) => (
@@ -87,7 +87,7 @@ export function BackgroundPaths({
                 ))}
               </span>
             ))}
-          </h1>
+          </p>
 
           <div className="group relative inline-block overflow-hidden rounded-2xl bg-gradient-to-b from-black/10 to-white/10 p-px shadow-lg backdrop-blur-lg transition-shadow duration-300 hover:shadow-xl">
             <Button
