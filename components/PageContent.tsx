@@ -10,14 +10,17 @@ import {
   Code2,
   Database,
   ExternalLink,
+  LogOut,
   Mail,
   Menu,
   Megaphone,
+  Pencil,
   Sparkles,
   Terminal,
   UserPlus,
 } from "lucide-react";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAdmin } from "@/components/admin/AdminContext";
 import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
@@ -30,6 +33,7 @@ interface PageContentProps {
 export default function PageContent({ initialContent }: PageContentProps) {
   const { isAdmin, content: ctxContent, setContent: setCtxContent } = useAdmin();
   const [localContent, setLocalContent] = useState<SiteContent>(initialContent);
+  const router = useRouter();
 
   // Use context content when admin (so AdminContext stays in sync), otherwise local
   const content = isAdmin ? ctxContent : localContent;
@@ -50,6 +54,17 @@ export default function PageContent({ initialContent }: PageContentProps) {
     },
     [content, isAdmin, setCtxContent],
   );
+
+  const handleSignOut = useCallback(async () => {
+    // Final save before clearing session
+    await fetch("/api/admin/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(content),
+    });
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/");
+  }, [content, router]);
 
   // Helper for deeply nested array updates
   function updateExperienceRole(
@@ -115,13 +130,61 @@ export default function PageContent({ initialContent }: PageContentProps) {
               as="span"
             />
           </div>
-          <div className="hidden md:flex">
-            <HoverGradientNavBar mode="inline" preset="portfolio" />
-          </div>
-          <div className="md:hidden">
+          {/* Nav links + admin controls */}
+          <div className="flex items-center gap-3">
+            {/* Desktop nav links */}
+            <div className="hidden md:flex">
+              <HoverGradientNavBar mode="inline" preset="portfolio" />
+            </div>
+
+            {/* Edit Page — desktop, visible to non-admins */}
+            {!isAdmin && (
+              <a
+                href="/admin"
+                className="hidden items-center gap-2 rounded-2xl border border-gray-200/80 bg-white/60 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 md:flex"
+              >
+                <Pencil size={14} />
+                Edit Page
+              </a>
+            )}
+
+            {/* Sign Out — desktop, visible to admins */}
+            {isAdmin && (
+              <button
+                onClick={handleSignOut}
+                className="hidden items-center gap-2 rounded-md bg-[#0e1c2b] px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:scale-[1.02] md:flex"
+              >
+                <LogOut size={14} />
+                Sign Out
+              </button>
+            )}
+
+            {/* Edit Page — mobile icon */}
+            {!isAdmin && (
+              <a
+                href="/admin"
+                aria-label="Edit page"
+                className="flex items-center justify-center p-1 text-[#0e1c2b] md:hidden"
+              >
+                <Pencil size={20} />
+              </a>
+            )}
+
+            {/* Sign Out — mobile icon */}
+            {isAdmin && (
+              <button
+                onClick={handleSignOut}
+                aria-label="Sign out"
+                className="flex items-center justify-center p-1 text-[#0e1c2b] md:hidden"
+              >
+                <LogOut size={20} />
+              </button>
+            )}
+
+            {/* Mobile hamburger menu */}
             <button
               aria-label="Open navigation menu"
-              className="flex items-center justify-center p-1"
+              className="flex items-center justify-center p-1 md:hidden"
             >
               <Menu className="text-[#0e1c2b]" size={22} />
             </button>
