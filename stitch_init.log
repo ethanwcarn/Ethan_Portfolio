@@ -1,0 +1,27 @@
+﻿node.exe : npm warn deprecated 
+whatwg-encoding@3.1.1: Use @exodus/bytes 
+instead for a more spec-conformant and 
+faster implementation
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifi 
+   ed: (npm warn deprec... implementati  
+  on:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComm 
+   andError
+ 
+
+≡ƒº╡ Stitch MCP Setup
+
+? Which MCP client are you using?
+Γ¥» Antigravity
+  VSCode
+  Cursor
+  Claude Code
+  Gemini CLI
+  Codex CLI
+  OpenCode
+

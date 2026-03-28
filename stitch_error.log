@@ -1,0 +1,20 @@
+﻿node.exe : [stitch-mcp] Γä╣∩╕Å  Starting 
+Stitch MCP Server v1.0.0 (win32)
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifi 
+   ed: ([stitch-mcp] Γä... v1.0.0 (win3  
+  2):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComm 
+   andError
+ 
+[stitch-mcp] Γä╣∩╕Å  Project: 
+project-b4ec9390-e9f3-4c3e-afa
+[stitch-mcp] Γ¥î Failed to get access 
+token
+[stitch-mcp] Γ¥î Fatal Startup Error: 
+Authentication failed. Run: gcloud auth 
+application-default login
