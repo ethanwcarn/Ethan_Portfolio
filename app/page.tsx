@@ -129,7 +129,8 @@ export default function Home() {
                     alt="Ethan Carn"
                     fill
                     className="object-cover"
-                    unoptimized
+                    priority
+                    sizes="(max-width: 1024px) 0px, 40vw"
                   />
                 </div>
               </div>
@@ -299,7 +300,8 @@ export default function Home() {
                           src={project.image}
                           alt={project.title}
                           fill
-                          unoptimized
+                          loading="lazy"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       </div>

@@ -5,11 +5,13 @@ import "./globals.css";
 const headingFont = Space_Grotesk({
   variable: "--font-heading",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const bodyFont = Inter({
   variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
