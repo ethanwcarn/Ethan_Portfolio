@@ -23,8 +23,7 @@ import {
   Terminal,
   UserPlus,
 } from "lucide-react";
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
 import { useAdmin } from "@/components/admin/AdminContext";
 import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
@@ -37,7 +36,13 @@ interface PageContentProps {
 export default function PageContent({ initialContent }: PageContentProps) {
   const { isAdmin, content: ctxContent, setContent: setCtxContent } = useAdmin();
   const [localContent, setLocalContent] = useState<SiteContent>(initialContent);
-  const router = useRouter();
+
+  // When admin activates, seed context with the server-fetched content (not hardcoded defaults)
+  useEffect(() => {
+    if (isAdmin) {
+      setCtxContent(localContent);
+    }
+  }, [isAdmin]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Use context content when admin (so AdminContext stays in sync), otherwise local
   const content = isAdmin ? ctxContent : localContent;
@@ -67,8 +72,9 @@ export default function PageContent({ initialContent }: PageContentProps) {
       body: JSON.stringify(content),
     });
     await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/");
-  }, [content, router]);
+    // Hard redirect — destroys React state so isAdmin resets to false on reload
+    window.location.href = "/";
+  }, [content]);
 
   // Helper for deeply nested array updates
   function updateExperienceRole(

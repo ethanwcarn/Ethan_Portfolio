@@ -255,15 +255,25 @@ export const defaultContent: SiteContent = {
 // ---------------------------------------------------------------------------
 
 export async function getContent(): Promise<SiteContent> {
+  // Try explicit URL first (fastest path)
   const url = process.env.CONTENT_BLOB_URL;
-  if (!url) {
-    return defaultContent;
+  if (url) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) return (await res.json()) as SiteContent;
+    } catch {}
   }
+
+  // Fallback: discover content.json in the blob store without needing CONTENT_BLOB_URL configured
   try {
-    const res = await fetch(url);
-    if (!res.ok) return defaultContent;
-    return (await res.json()) as SiteContent;
-  } catch {
-    return defaultContent;
-  }
+    const { list } = await import("@vercel/blob");
+    const { blobs } = await list({ prefix: "content" });
+    const found = blobs.find((b) => b.pathname === "content.json");
+    if (found) {
+      const res = await fetch(found.url, { cache: "no-store" });
+      if (res.ok) return (await res.json()) as SiteContent;
+    }
+  } catch {}
+
+  return defaultContent;
 }
