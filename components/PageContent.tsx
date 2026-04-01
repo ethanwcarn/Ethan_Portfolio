@@ -3,7 +3,11 @@
 import Image from "next/image";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
 import HoverGradientNavBar from "@/components/ui/hover-gradient-nav-bar";
-import { BackgroundPaths } from "@/components/ui/background-paths";
+import dynamic from "next/dynamic";
+const BackgroundPaths = dynamic(
+  () => import("@/components/ui/background-paths").then((m) => m.BackgroundPaths),
+  { ssr: false }
+);
 import {
   ArrowRight,
   BarChart3,
@@ -214,7 +218,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                     onSave={(v) => update({ aboutName: v })}
                     as="span"
                   />{" "}
-                  <span className="text-[#8b99ac]">
+                  <span className="text-[#47607e]">
                     <EditableText
                       value={content.aboutNameSuffix}
                       onSave={(v) => update({ aboutNameSuffix: v })}
@@ -499,7 +503,8 @@ export default function PageContent({ initialContent }: PageContentProps) {
                           alt={project.title}
                           fill
                           loading="lazy"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          quality={70}
                           className="object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       </div>
