@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
   const blob = await put(filename, JSON.stringify(content, null, 2), {
     access: "public",
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: "application/json",
   });
 
