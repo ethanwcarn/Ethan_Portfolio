@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AdminProvider } from "@/components/admin/AdminContext";
 import { defaultContent } from "@/lib/content";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const headingFont = Space_Grotesk({
   variable: "--font-heading",
@@ -74,6 +75,7 @@ export default function RootLayout({
         <AdminProvider initialContent={defaultContent}>
           {children}
         </AdminProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
