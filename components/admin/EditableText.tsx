@@ -74,6 +74,7 @@ export function EditableText({
     return (
       <textarea
         className={className}
+        aria-label={`Edit: ${value.slice(0, 40)}`}
         value={draft}
         autoFocus
         onChange={(e) => setDraft(e.target.value)}
@@ -104,6 +105,7 @@ export function EditableText({
     <input
       type="text"
       className={className}
+      aria-label={`Edit: ${value.slice(0, 40)}`}
       value={draft}
       autoFocus
       onChange={(e) => setDraft(e.target.value)}

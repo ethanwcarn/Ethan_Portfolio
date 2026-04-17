@@ -4,18 +4,23 @@ import { useRef, useState } from "react";
 import type { Project } from "@/lib/content";
 
 interface AddProjectModalProps {
-  onAdd: (project: Project) => void;
+  mode?: "add" | "edit";
+  initialData?: Project;
+  onAdd?: (project: Project) => void;
+  onSave?: (project: Project) => void;
   onClose: () => void;
 }
 
-export function AddProjectModal({ onAdd, onClose }: AddProjectModalProps) {
-  const [form, setForm] = useState<Project>({
-    tag: "",
-    title: "",
-    text: "",
-    href: "",
-    image: "",
-  });
+export function AddProjectModal({
+  mode = "add",
+  initialData,
+  onAdd,
+  onSave,
+  onClose,
+}: AddProjectModalProps) {
+  const [form, setForm] = useState<Project>(
+    initialData ?? { tag: "", title: "", text: "", href: "", image: "" }
+  );
   const [imageUploading, setImageUploading] = useState(false);
   const [imageError, setImageError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -53,8 +58,14 @@ export function AddProjectModal({ onAdd, onClose }: AddProjectModalProps) {
   function handleSubmit() {
     if (!form.title.trim() || !form.image) return;
     setSubmitting(true);
-    onAdd(form);
+    if (mode === "edit") {
+      onSave?.(form);
+    } else {
+      onAdd?.(form);
+    }
   }
+
+  const isEdit = mode === "edit";
 
   return (
     <div
@@ -62,56 +73,73 @@ export function AddProjectModal({ onAdd, onClose }: AddProjectModalProps) {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="w-full max-w-lg rounded-xl bg-[#0e1c2b] p-8 text-white shadow-2xl">
-        <h2 className="mb-6 font-heading text-xl font-bold tracking-tight">Add Project</h2>
+        <h2 className="mb-6 font-heading text-xl font-bold tracking-tight">
+          {isEdit ? "Edit Project" : "Add Project"}
+        </h2>
 
         <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">Title *</span>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="proj-title" className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">
+              Title *
+            </label>
             <input
-              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/30 focus:ring-2 focus:ring-[#4cd6ff]"
+              id="proj-title"
+              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/40 focus:ring-2 focus:ring-[#4cd6ff]"
               placeholder="My Project (2025)"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
             />
-          </label>
+          </div>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">Category</span>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="proj-tag" className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">
+              Category
+            </label>
             <input
-              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/30 focus:ring-2 focus:ring-[#4cd6ff]"
+              id="proj-tag"
+              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/40 focus:ring-2 focus:ring-[#4cd6ff]"
               placeholder="Full-Stack Development"
               value={form.tag}
               onChange={(e) => setForm((f) => ({ ...f, tag: e.target.value }))}
             />
-          </label>
+          </div>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">Description</span>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="proj-text" className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">
+              Description
+            </label>
             <textarea
-              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/30 focus:ring-2 focus:ring-[#4cd6ff]"
+              id="proj-text"
+              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/40 focus:ring-2 focus:ring-[#4cd6ff]"
               placeholder="Brief description of the project…"
               rows={3}
               value={form.text}
               onChange={(e) => setForm((f) => ({ ...f, text: e.target.value }))}
             />
-          </label>
+          </div>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">URL</span>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="proj-href" className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">
+              URL
+            </label>
             <input
-              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/30 focus:ring-2 focus:ring-[#4cd6ff]"
+              id="proj-href"
+              className="rounded-md bg-white/10 px-4 py-2 text-sm outline-none placeholder:text-white/40 focus:ring-2 focus:ring-[#4cd6ff]"
               placeholder="https://example.com"
               value={form.href}
               onChange={(e) => setForm((f) => ({ ...f, href: e.target.value }))}
             />
-          </label>
+          </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">Project Image *</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-[#4cd6ff]">
+              Project Image *
+            </span>
             <input
               ref={fileRef}
               type="file"
               accept="image/*"
+              aria-label="Upload project image"
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0];
@@ -147,7 +175,7 @@ export function AddProjectModal({ onAdd, onClose }: AddProjectModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md px-5 py-2 text-sm font-bold text-white/60 transition-colors hover:text-white"
+            className="rounded-md px-5 py-2 text-sm font-bold text-white/70 transition-colors hover:text-white"
           >
             Cancel
           </button>
@@ -157,7 +185,7 @@ export function AddProjectModal({ onAdd, onClose }: AddProjectModalProps) {
             disabled={!form.title.trim() || !form.image || submitting}
             className="rounded-md bg-[#4cd6ff] px-6 py-2 text-sm font-bold text-[#0e1c2b] transition-all hover:scale-[1.03] disabled:opacity-40"
           >
-            {submitting ? "Adding…" : "Add Project"}
+            {submitting ? "Saving…" : isEdit ? "Save Changes" : "Add Project"}
           </button>
         </div>
       </div>

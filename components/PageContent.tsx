@@ -15,20 +15,18 @@ import {
   Database,
   ExternalLink,
   LogOut,
-  Mail,
   Menu,
   Megaphone,
   Pencil,
   Sparkles,
-  Terminal,
-  UserPlus,
 } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
 import { useAdmin } from "@/components/admin/AdminContext";
 import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
 import { AddProjectModal } from "@/components/admin/AddProjectModal";
-import type { SiteContent, Project } from "@/lib/content";
+import { AddRoleModal } from "@/components/admin/AddRoleModal";
+import type { SiteContent, Project, ExperienceRole } from "@/lib/content";
 
 interface PageContentProps {
   initialContent: SiteContent;
@@ -129,14 +127,39 @@ export default function PageContent({ initialContent }: PageContentProps) {
   }
 
   const [showAddProject, setShowAddProject] = useState(false);
+  const [editProjectIdx, setEditProjectIdx] = useState<number | null>(null);
 
   function addProject(project: Project) {
     update({ projects: [...content.projects, project] });
     setShowAddProject(false);
   }
 
+  function saveProject(idx: number, project: Project) {
+    const projects = content.projects.map((p, i) => (i === idx ? project : p));
+    update({ projects });
+    setEditProjectIdx(null);
+  }
+
   function deleteProject(idx: number) {
     update({ projects: content.projects.filter((_, i) => i !== idx) });
+  }
+
+  const [showAddRole, setShowAddRole] = useState(false);
+  const [editRoleIdx, setEditRoleIdx] = useState<number | null>(null);
+
+  function addRole(role: ExperienceRole) {
+    update({ experienceRoles: [...content.experienceRoles, role] });
+    setShowAddRole(false);
+  }
+
+  function saveRole(idx: number, role: ExperienceRole) {
+    const experienceRoles = content.experienceRoles.map((r, i) => (i === idx ? role : r));
+    update({ experienceRoles });
+    setEditRoleIdx(null);
+  }
+
+  function deleteRole(idx: number) {
+    update({ experienceRoles: content.experienceRoles.filter((_, i) => i !== idx) });
   }
 
   return (
@@ -446,7 +469,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
               {content.experienceRoles.map((role, idx) => (
                 <div
                   key={idx}
-                  className="relative pl-8 before:absolute before:bottom-0 before:left-0 before:top-0 before:w-px before:bg-[var(--outline-variant)]"
+                  className="group/role relative pl-8 before:absolute before:bottom-0 before:left-0 before:top-0 before:w-px before:bg-[var(--outline-variant)]"
                 >
                   <GlowingShadow>
                     <div className="rounded-xl bg-white p-8">
@@ -467,13 +490,33 @@ export default function PageContent({ initialContent }: PageContentProps) {
                             />
                           </p>
                         </div>
-                        <span className="rounded bg-[var(--surface-container)] px-3 py-1 text-sm text-[var(--on-surface-variant)]">
-                          <EditableText
-                            value={role.years}
-                            onSave={(v) => updateExperienceRole(idx, "years", v)}
-                            as="span"
-                          />
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="rounded bg-[var(--surface-container)] px-3 py-1 text-sm text-[var(--on-surface-variant)]">
+                            <EditableText
+                              value={role.years}
+                              onSave={(v) => updateExperienceRole(idx, "years", v)}
+                              as="span"
+                            />
+                          </span>
+                          {isAdmin && (
+                            <div className="flex gap-1 opacity-0 transition-opacity group-hover/role:opacity-100">
+                              <button
+                                onClick={() => setEditRoleIdx(idx)}
+                                aria-label={`Edit ${role.title}`}
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0e1c2b] text-white shadow transition-colors hover:bg-[#233141]"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                              </button>
+                              <button
+                                onClick={() => deleteRole(idx)}
+                                aria-label={`Delete ${role.title}`}
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-red-600 text-white shadow transition-colors hover:bg-red-700"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <p className="text-[var(--on-surface-variant)]">
                         <EditableText
@@ -487,6 +530,33 @@ export default function PageContent({ initialContent }: PageContentProps) {
                   </GlowingShadow>
                 </div>
               ))}
+              {isAdmin && (
+                <div className="flex justify-center pt-4">
+                  <button
+                    onClick={() => setShowAddRole(true)}
+                    className="flex items-center gap-2 rounded-md px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors"
+                    style={{
+                      border: "1.5px dashed #4cd6ff",
+                      color: "#4cd6ff",
+                      background: "rgba(76,214,255,0.06)",
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Position
+                  </button>
+                </div>
+              )}
+              {showAddRole && (
+                <AddRoleModal onAdd={addRole} onClose={() => setShowAddRole(false)} />
+              )}
+              {editRoleIdx !== null && (
+                <AddRoleModal
+                  mode="edit"
+                  initialData={content.experienceRoles[editRoleIdx]}
+                  onSave={(role) => saveRole(editRoleIdx, role)}
+                  onClose={() => setEditRoleIdx(null)}
+                />
+              )}
             </div>
           </div>
         </section>
@@ -514,16 +584,22 @@ export default function PageContent({ initialContent }: PageContentProps) {
               {content.projects.map((project, idx) => (
                 <article key={idx} className="group relative">
                   {isAdmin && (
-                    <button
-                      onClick={() => deleteProject(idx)}
-                      aria-label={`Delete ${project.title}`}
-                      className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white opacity-0 shadow transition-opacity group-hover:opacity-100 hover:bg-red-700"
-                      title="Delete project"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4h6v2" />
-                      </svg>
-                    </button>
+                    <div className="absolute right-3 top-3 z-10 flex gap-1 opacity-0 shadow transition-opacity group-hover:opacity-100">
+                      <button
+                        onClick={() => setEditProjectIdx(idx)}
+                        aria-label={`Edit ${project.title}`}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0e1c2b] text-white hover:bg-[#233141]"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      </button>
+                      <button
+                        onClick={() => deleteProject(idx)}
+                        aria-label={`Delete ${project.title}`}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                      </button>
+                    </div>
                   )}
                   <GlowingShadow>
                     <div className="overflow-hidden rounded-xl bg-white">
@@ -604,6 +680,14 @@ export default function PageContent({ initialContent }: PageContentProps) {
             {showAddProject && (
               <AddProjectModal onAdd={addProject} onClose={() => setShowAddProject(false)} />
             )}
+            {editProjectIdx !== null && (
+              <AddProjectModal
+                mode="edit"
+                initialData={content.projects[editProjectIdx]}
+                onSave={(proj) => saveProject(editProjectIdx, proj)}
+                onClose={() => setEditProjectIdx(null)}
+              />
+            )}
           </div>
         </section>
 
@@ -677,9 +761,11 @@ export default function PageContent({ initialContent }: PageContentProps) {
                 {content.awards.map((award, idx) => (
                   <li key={idx} className="flex items-start gap-4">
                     {idx === 0 ? (
-                      <Sparkles className="text-[var(--tertiary)]" />
+                      <Sparkles className="mt-0.5 shrink-0 text-[var(--tertiary)]" />
+                    ) : idx === 2 ? (
+                      <svg className="mt-0.5 shrink-0 text-[var(--tertiary)]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
                     ) : (
-                      <Megaphone className="text-[var(--tertiary)]" />
+                      <Megaphone className="mt-0.5 shrink-0 text-[var(--tertiary)]" />
                     )}
                     <div>
                       <p className="font-heading font-bold text-[var(--primary)]">
@@ -735,7 +821,10 @@ export default function PageContent({ initialContent }: PageContentProps) {
                 href={`mailto:${content.email}`}
                 aria-label="Email Ethan"
               >
-                <Mail size={18} />
+                {/* Gmail icon */}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.147C21.69 2.28 24 3.434 24 5.457z"/>
+                </svg>
                 Email Ethan
               </a>
               {content.resumeUrl && (
@@ -764,7 +853,10 @@ export default function PageContent({ initialContent }: PageContentProps) {
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
                 >
-                  <UserPlus size={18} />
+                  {/* LinkedIn icon */}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
                 </a>
                 <a
                   className="flex h-14 w-14 items-center justify-center rounded-md border border-[color:rgb(198_197_212/.3)] transition-colors hover:bg-[#f3f4f5] hover:text-[#0e1c2b]"
@@ -773,7 +865,10 @@ export default function PageContent({ initialContent }: PageContentProps) {
                   rel="noopener noreferrer"
                   aria-label="GitHub"
                 >
-                  <Terminal size={18} />
+                  {/* GitHub icon */}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
                 </a>
               </div>
             </div>

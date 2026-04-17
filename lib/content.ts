@@ -224,6 +224,10 @@ export const defaultContent: SiteContent = {
       title: "BYU Connect Brand Ambassador",
       org: "Promoting professional networking within the student body",
     },
+    {
+      title: "2nd Place — Utah State Hackathon",
+      org: "Built Flock, a college rideshare mobile app for social connection and environmental awareness",
+    },
   ],
 
   // ── Contact ──────────────────────────────────────────────────────────────
