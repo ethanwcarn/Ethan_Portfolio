@@ -27,7 +27,8 @@ import { useState, useCallback, useEffect } from "react";
 import { useAdmin } from "@/components/admin/AdminContext";
 import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
-import type { SiteContent } from "@/lib/content";
+import { AddProjectModal } from "@/components/admin/AddProjectModal";
+import type { SiteContent, Project } from "@/lib/content";
 
 interface PageContentProps {
   initialContent: SiteContent;
@@ -125,6 +126,17 @@ export default function PageContent({ initialContent }: PageContentProps) {
       i === idx ? value : s,
     );
     update({ skillsDataAndBi });
+  }
+
+  const [showAddProject, setShowAddProject] = useState(false);
+
+  function addProject(project: Project) {
+    update({ projects: [...content.projects, project] });
+    setShowAddProject(false);
+  }
+
+  function deleteProject(idx: number) {
+    update({ projects: content.projects.filter((_, i) => i !== idx) });
   }
 
   return (
@@ -500,7 +512,19 @@ export default function PageContent({ initialContent }: PageContentProps) {
             </div>
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {content.projects.map((project, idx) => (
-                <article key={idx} className="group">
+                <article key={idx} className="group relative">
+                  {isAdmin && (
+                    <button
+                      onClick={() => deleteProject(idx)}
+                      aria-label={`Delete ${project.title}`}
+                      className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white opacity-0 shadow transition-opacity group-hover:opacity-100 hover:bg-red-700"
+                      title="Delete project"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4h6v2" />
+                      </svg>
+                    </button>
+                  )}
                   <GlowingShadow>
                     <div className="overflow-hidden rounded-xl bg-white">
                       <div className="relative h-64 overflow-hidden">
@@ -561,6 +585,25 @@ export default function PageContent({ initialContent }: PageContentProps) {
                 </article>
               ))}
             </div>
+            {isAdmin && (
+              <div className="mt-10 flex justify-center">
+                <button
+                  onClick={() => setShowAddProject(true)}
+                  className="flex items-center gap-2 rounded-md px-6 py-3 text-sm font-bold uppercase tracking-widest transition-colors"
+                  style={{
+                    border: "1.5px dashed #4cd6ff",
+                    color: "#4cd6ff",
+                    background: "rgba(76,214,255,0.06)",
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                  Add Project
+                </button>
+              </div>
+            )}
+            {showAddProject && (
+              <AddProjectModal onAdd={addProject} onClose={() => setShowAddProject(false)} />
+            )}
           </div>
         </section>
 
@@ -709,6 +752,8 @@ export default function PageContent({ initialContent }: PageContentProps) {
               {isAdmin && (
                 <ResumeUpload
                   onSave={(url) => update({ resumeUrl: url })}
+                  currentUrl={content.resumeUrl}
+                  onDelete={() => update({ resumeUrl: "" })}
                 />
               )}
               <div className="flex gap-4">

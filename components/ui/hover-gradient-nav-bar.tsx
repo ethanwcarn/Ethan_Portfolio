@@ -70,7 +70,7 @@ const portfolioMenuItems: HoverGradientMenuItem[] = [
   {
     icon: <FileText className="h-5 w-5" />,
     label: "Resume",
-    href: "#",
+    href: "/resume",
     gradient:
       "radial-gradient(circle, rgba(161,98,7,0.15) 0%, rgba(133,77,14,0.06) 50%, rgba(100,62,8,0) 100%)",
     iconColor: "group-hover:text-amber-600",

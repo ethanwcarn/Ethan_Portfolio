@@ -5,9 +5,11 @@ import { useAdmin } from "./AdminContext";
 
 interface ResumeUploadProps {
   onSave: (url: string) => void;
+  currentUrl?: string;
+  onDelete?: () => void;
 }
 
-export function ResumeUpload({ onSave }: ResumeUploadProps) {
+export function ResumeUpload({ onSave, currentUrl, onDelete }: ResumeUploadProps) {
   const { isAdmin } = useAdmin();
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -90,6 +92,20 @@ export function ResumeUpload({ onSave }: ResumeUploadProps) {
           "Upload PDF"
         )}
       </button>
+      {currentUrl && onDelete && (
+        <button
+          onClick={onDelete}
+          className="rounded px-3 py-1 text-xs font-bold uppercase tracking-widest transition-colors"
+          style={{
+            border: "1.5px dashed #ff6b6b",
+            color: "#ff6b6b",
+            background: "rgba(255,107,107,0.06)",
+          }}
+          title="Delete resume"
+        >
+          Delete Resume
+        </button>
+      )}
       {error && (
         <span className="text-xs" style={{ color: "#ff6b6b" }}>
           {error}
