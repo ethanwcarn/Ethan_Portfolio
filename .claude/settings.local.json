@@ -9,7 +9,12 @@
       "Bash(npm install:*)",
       "Bash(npx ts-node:*)",
       "Bash(printf '%s' 'https://2yo8ntgt39tj5egj.public.blob.vercel-storage.com/content.json')",
-      "Bash(vercel --prod)"
+      "Bash(vercel --prod)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(npm audit *)",
+      "Bash(npm uninstall *)"
     ]
   }
 }

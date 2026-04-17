@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
-import { checkLoginRateLimit } from "@/lib/ratelimit";
 
 // bcrypt silently truncates at 72 bytes — a very long input still runs the
 // full work factor before truncating, enabling CPU-exhaustion DoS.
@@ -30,23 +29,6 @@ async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
 }
 
 export async function POST(req: NextRequest) {
-  // --- Rate limiting (per IP, sliding window 5 req / 15 min) ---
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
-
-  const { allowed, retryAfter } = await checkLoginRateLimit(ip);
-  if (!allowed) {
-    return NextResponse.json(
-      { error: "Too many login attempts. Please try again later." },
-      {
-        status: 429,
-        headers: { "Retry-After": String(retryAfter ?? 60) },
-      }
-    );
-  }
-
   // --- Content-type & JSON validation ---
   const contentType = req.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
@@ -83,6 +65,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (tokenStr) {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? req.headers.get("x-real-ip") ?? "unknown";
     const captchaOk = await verifyTurnstile(tokenStr, ip);
     if (!captchaOk) {
       return NextResponse.json({ error: "CAPTCHA verification failed" }, { status: 400 });
