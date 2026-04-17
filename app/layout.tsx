@@ -9,13 +9,19 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 const headingFont = Space_Grotesk({
   variable: "--font-heading",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
+  preload: true,
+  adjustFontFallback: true,
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"],
 });
 
 const bodyFont = Inter({
   variable: "--font-body",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
+  preload: true,
+  adjustFontFallback: true,
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"],
 });
 
 const BASE_URL = "https://ethancarn.dev";
