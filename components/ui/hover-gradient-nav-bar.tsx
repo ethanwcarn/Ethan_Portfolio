@@ -155,7 +155,7 @@ function HoverGradientNavBar({
                 />
                 <motion.a
                   href={item.href}
-                  className="relative z-10 flex flex-col items-center justify-center gap-0.5 rounded-xl bg-transparent px-2 py-1.5 text-xs text-gray-600 transition-colors group-hover:text-gray-900 md:flex-row md:gap-2 md:rounded-2xl md:px-4 md:py-2 md:text-sm"
+                  className="relative z-10 flex flex-col items-center justify-center gap-0.5 rounded-xl bg-transparent px-2 py-1.5 text-xs text-gray-600 transition-colors group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-white md:flex-row md:gap-2 md:rounded-2xl md:px-4 md:py-2 md:text-sm"
                   variants={itemVariants}
                   transition={sharedTransition}
                   style={{

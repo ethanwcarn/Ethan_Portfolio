@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
+import { useTheme } from "@/hooks/useTheme";
 import { useAdmin } from "@/components/admin/AdminContext";
 import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
@@ -35,6 +36,7 @@ interface PageContentProps {
 
 export default function PageContent({ initialContent }: PageContentProps) {
   const { isAdmin, content: ctxContent, setContent: setCtxContent } = useAdmin();
+  const { isDark, toggle: toggleTheme } = useTheme();
   const [localContent, setLocalContent] = useState<SiteContent>(initialContent);
 
   // When admin activates, seed context with the server-fetched content (not hardcoded defaults)
@@ -178,9 +180,9 @@ export default function PageContent({ initialContent }: PageContentProps) {
     <>
       <BackgroundPaths title={content.heroTitle} />
 
-      <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-md dark:border-slate-700/60 dark:bg-[#0c1a27]/95">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
-          <div className="font-heading text-xl font-bold tracking-tighter text-[#0e1c2b]">
+          <div className="font-heading text-xl font-bold tracking-tighter text-[#0e1c2b] dark:text-white">
             <EditableText
               value={content.brandName}
               onSave={(v) => update({ brandName: v })}
@@ -194,11 +196,24 @@ export default function PageContent({ initialContent }: PageContentProps) {
               <HoverGradientNavBar mode="inline" preset="portfolio" />
             </div>
 
+            {/* Theme toggle — always visible */}
+            <button
+              onClick={toggleTheme}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              className="flex items-center justify-center rounded-full p-2 text-[#0e1c2b] transition-colors hover:bg-slate-100 dark:text-[#a0b4c8] dark:hover:bg-[#1a2a3a]"
+            >
+              {isDark ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              )}
+            </button>
+
             {/* Edit Page — desktop, visible to non-admins */}
             {!isAdmin && (
               <a
                 href="/admin"
-                className="hidden items-center gap-2 rounded-2xl border border-gray-200/80 bg-white/60 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 md:flex"
+                className="hidden items-center gap-2 rounded-2xl border border-gray-200/80 bg-white/60 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 dark:border-slate-700/80 dark:bg-[#152333]/60 dark:text-slate-300 dark:hover:bg-[#1a2a3a] dark:hover:text-white md:flex"
               >
                 <Pencil size={14} />
                 Edit Page
@@ -221,7 +236,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
               <a
                 href="/admin"
                 aria-label="Edit page"
-                className="flex items-center justify-center p-1 text-[#0e1c2b] md:hidden"
+                className="flex items-center justify-center p-1 text-[#0e1c2b] dark:text-slate-300 md:hidden"
               >
                 <Pencil size={20} />
               </a>
@@ -232,7 +247,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
               <button
                 onClick={handleSignOut}
                 aria-label="Sign out"
-                className="flex items-center justify-center p-1 text-[#0e1c2b] md:hidden"
+                className="flex items-center justify-center p-1 text-[#0e1c2b] dark:text-slate-300 md:hidden"
               >
                 <LogOut size={20} />
               </button>
@@ -243,7 +258,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
               aria-label="Open navigation menu"
               className="flex items-center justify-center p-1 md:hidden"
             >
-              <Menu className="text-[#0e1c2b]" size={22} />
+              <Menu className="text-[#0e1c2b] dark:text-slate-300" size={22} />
             </button>
           </div>
         </div>
@@ -258,20 +273,20 @@ export default function PageContent({ initialContent }: PageContentProps) {
           <div className="grid w-full items-center gap-12 lg:grid-cols-12">
             <div className="space-y-8 lg:col-span-7">
               <div className="space-y-4">
-                <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28]">
+                <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28] dark:text-[#4cd6ff]">
                   <EditableText
                     value={content.aboutEyebrow}
                     onSave={(v) => update({ aboutEyebrow: v })}
                     as="span"
                   />
                 </span>
-                <h1 className="font-heading text-5xl font-bold leading-tight tracking-tighter text-[#0e1c2b] sm:text-6xl md:text-8xl">
+                <h1 className="font-heading text-5xl font-bold leading-tight tracking-tighter text-[#0e1c2b] dark:text-white sm:text-6xl md:text-8xl">
                   <EditableText
                     value={content.aboutName}
                     onSave={(v) => update({ aboutName: v })}
                     as="span"
                   />{" "}
-                  <span className="text-[#47607e]">
+                  <span className="text-[#47607e] dark:text-[#8ba8c4]">
                     <EditableText
                       value={content.aboutNameSuffix}
                       onSave={(v) => update({ aboutNameSuffix: v })}
@@ -279,7 +294,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                     />
                   </span>
                 </h1>
-                <p className="max-w-xl text-xl leading-relaxed text-[#47607e]">
+                <p className="max-w-xl text-xl leading-relaxed text-[#47607e] dark:text-[#8ba8c4]">
                   <EditableText
                     value={content.aboutBio}
                     onSave={(v) => update({ aboutBio: v })}
@@ -292,21 +307,21 @@ export default function PageContent({ initialContent }: PageContentProps) {
               <div className="flex flex-wrap gap-8 pt-4 sm:gap-12">
                 {content.aboutStats.map((stat, idx) => (
                   <div key={idx} className="space-y-1">
-                    <span className="block font-heading text-4xl font-bold text-[#0e1c2b]">
+                    <span className="block font-heading text-4xl font-bold text-[#0e1c2b] dark:text-white">
                       <EditableText
                         value={stat.value}
                         onSave={(v) => updateStat(idx, "value", v)}
                         as="span"
                       />
                     </span>
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#47607e]">
+                    <span className="text-xs font-bold uppercase tracking-widest text-[#47607e] dark:text-[#8ba8c4]">
                       <EditableText
                         value={stat.label}
                         onSave={(v) => updateStat(idx, "label", v)}
                         as="span"
                       />
                     </span>
-                    <div className="mt-2 h-0.5 w-12 bg-[#001f28]" />
+                    <div className="mt-2 h-0.5 w-12 bg-[#001f28] dark:bg-[#4cd6ff]" />
                   </div>
                 ))}
               </div>
@@ -327,7 +342,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
             </div>
 
             <div className="relative hidden lg:col-span-5 lg:block">
-              <div className="aspect-square rounded-full border border-[color:rgb(198_197_212/.2)] bg-[#f3f4f5] p-8">
+              <div className="aspect-square rounded-full border border-[color:rgb(198_197_212/.2)] bg-[#f3f4f5] p-8 dark:bg-[#152333] dark:border-[#233141]">
                 <div className="relative h-full w-full overflow-hidden rounded-full">
                   <Image
                     src={content.headshotSrc}
@@ -341,10 +356,10 @@ export default function PageContent({ initialContent }: PageContentProps) {
               </div>
               <div className="absolute -bottom-4 -left-4 w-[220px]">
                 <GlowingShadow>
-                  <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
-                    <Database className="text-[#001f28]" size={36} />
+                  <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-white p-6 shadow-sm dark:border-[#233141] dark:bg-[#152333]">
+                    <Database className="text-[#001f28] dark:text-[#4cd6ff]" size={36} />
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-tight text-[#47607e]">
+                      <p className="text-xs font-bold uppercase tracking-tight text-[#47607e] dark:text-[#8ba8c4]">
                         <EditableText
                           value={content.statusBadge.label}
                           onSave={(v) =>
@@ -353,7 +368,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                           as="span"
                         />
                       </p>
-                      <p className="font-heading text-sm font-bold text-[#0e1c2b]">
+                      <p className="font-heading text-sm font-bold text-[#0e1c2b] dark:text-white">
                         <EditableText
                           value={content.statusBadge.value}
                           onSave={(v) =>
@@ -371,18 +386,18 @@ export default function PageContent({ initialContent }: PageContentProps) {
         </section>
 
         {/* ── Skills ───────────────────────────────────────────────────────── */}
-        <section className="bg-[#f3f4f5] py-24">
+        <section className="bg-[#f3f4f5] py-24 dark:bg-[#09131c]">
           <div className="mx-auto max-w-7xl px-8">
             <div className="mb-16 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div className="max-w-xl">
-                <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28]">
+                <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28] dark:text-[#4cd6ff]">
                   <EditableText
                     value={content.skillsEyebrow}
                     onSave={(v) => update({ skillsEyebrow: v })}
                     as="span"
                   />
                 </span>
-                <h2 className="mt-2 font-heading text-4xl font-bold text-[#0e1c2b] md:text-5xl">
+                <h2 className="mt-2 font-heading text-4xl font-bold text-[#0e1c2b] dark:text-white md:text-5xl">
                   <EditableText
                     value={content.skillsHeading}
                     onSave={(v) => update({ skillsHeading: v })}
@@ -390,7 +405,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                   />
                 </h2>
               </div>
-              <p className="max-w-sm text-[#47607e]">
+              <p className="max-w-sm text-[#47607e] dark:text-[#8ba8c4]">
                 <EditableText
                   value={content.skillsDescription}
                   onSave={(v) => update({ skillsDescription: v })}
@@ -402,16 +417,16 @@ export default function PageContent({ initialContent }: PageContentProps) {
             <div className="grid gap-6 md:grid-cols-3">
               <div className="md:col-span-2">
                 <GlowingShadow>
-                  <div className="rounded-xl bg-white p-10">
-                    <Code2 className="mb-6 text-[#0e1c2b]" size={36} />
-                    <h3 className="mb-6 font-heading text-2xl font-bold text-[#0e1c2b]">
+                  <div className="rounded-xl bg-white p-10 dark:bg-[#152333]">
+                    <Code2 className="mb-6 text-[#0e1c2b] dark:text-[#4cd6ff]" size={36} />
+                    <h3 className="mb-6 font-heading text-2xl font-bold text-[#0e1c2b] dark:text-white">
                       Development
                     </h3>
                     <div className="flex flex-wrap gap-3">
                       {content.skillsDevelopment.map((skill, idx) => (
                         <span
                           key={idx}
-                          className="rounded-full bg-[#c2dcff] px-4 py-2 text-xs font-bold text-[#001d36]"
+                          className="rounded-full bg-[#c2dcff] px-4 py-2 text-xs font-bold text-[#001d36] dark:bg-[#1a3050] dark:text-[#c2dcff]"
                         >
                           <EditableText
                             value={skill}
@@ -484,7 +499,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                   className="group/role relative pl-8 before:absolute before:bottom-0 before:left-0 before:top-0 before:w-px before:bg-[var(--outline-variant)]"
                 >
                   <GlowingShadow>
-                    <div className="rounded-xl bg-white p-8">
+                    <div className="rounded-xl bg-white p-8 dark:bg-[#152333]">
                       <div className="mb-4 flex flex-col items-start justify-between md:flex-row">
                         <div>
                           <h3 className="font-heading text-xl font-bold text-[var(--primary)]">
@@ -574,17 +589,17 @@ export default function PageContent({ initialContent }: PageContentProps) {
         </section>
 
         {/* ── Projects ─────────────────────────────────────────────────────── */}
-        <section id="projects" className="bg-[#f3f4f5] py-24">
+        <section id="projects" className="bg-[#f3f4f5] py-24 dark:bg-[#09131c]">
           <div className="mx-auto max-w-7xl px-8">
             <div className="mb-16">
-              <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28]">
+              <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28] dark:text-[#4cd6ff]">
                 <EditableText
                   value={content.projectsEyebrow}
                   onSave={(v) => update({ projectsEyebrow: v })}
                   as="span"
                 />
               </span>
-              <h2 className="mt-2 font-heading text-4xl font-bold text-[#0e1c2b] md:text-5xl">
+              <h2 className="mt-2 font-heading text-4xl font-bold text-[#0e1c2b] dark:text-white md:text-5xl">
                 <EditableText
                   value={content.projectsHeading}
                   onSave={(v) => update({ projectsHeading: v })}
@@ -614,7 +629,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                     </div>
                   )}
                   <GlowingShadow>
-                    <div className="overflow-hidden rounded-xl bg-white">
+                    <div className="overflow-hidden rounded-xl bg-white dark:bg-[#152333]">
                       <div className="relative h-64 overflow-hidden">
                         <Image
                           src={project.image}
@@ -627,21 +642,21 @@ export default function PageContent({ initialContent }: PageContentProps) {
                         />
                       </div>
                       <div className="p-8">
-                        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#001f28]">
+                        <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#001f28] dark:text-[#4cd6ff]">
                           <EditableText
                             value={project.tag}
                             onSave={(v) => updateProject(idx, "tag", v)}
                             as="span"
                           />
                         </span>
-                        <h3 className="mb-4 font-heading text-2xl font-bold text-[#0e1c2b]">
+                        <h3 className="mb-4 font-heading text-2xl font-bold text-[#0e1c2b] dark:text-white">
                           <EditableText
                             value={project.title}
                             onSave={(v) => updateProject(idx, "title", v)}
                             as="span"
                           />
                         </h3>
-                        <p className="mb-6 text-sm text-[#454652]">
+                        <p className="mb-6 text-sm text-[#454652] dark:text-[#a0b4c8]">
                           <EditableText
                             value={project.text}
                             onSave={(v) => updateProject(idx, "text", v)}
@@ -656,7 +671,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                             rel="noopener noreferrer"
                             aria-label={`Open ${project.title}`}
                           >
-                            <ExternalLink className="text-[#47607e] transition-colors hover:text-[#0e1c2b]" />
+                            <ExternalLink className="text-[#47607e] transition-colors hover:text-[#0e1c2b] dark:text-[#8ba8c4] dark:hover:text-white" />
                           </a>
                           <a
                             href={project.href}
@@ -664,7 +679,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                             rel="noopener noreferrer"
                             aria-label={`View source for ${project.title}`}
                           >
-                            <Code2 className="text-[#47607e] transition-colors hover:text-[#0e1c2b]" />
+                            <Code2 className="text-[#47607e] transition-colors hover:text-[#0e1c2b] dark:text-[#8ba8c4] dark:hover:text-white" />
                           </a>
                         </div>
                       </div>
@@ -887,7 +902,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
               )}
               <div className="flex gap-4">
                 <a
-                  className="flex h-14 w-14 items-center justify-center rounded-md border border-[color:rgb(198_197_212/.3)] transition-colors hover:bg-[#f3f4f5] hover:text-[#0e1c2b]"
+                  className="flex h-14 w-14 items-center justify-center rounded-md border border-[color:rgb(198_197_212/.3)] transition-colors hover:bg-[#f3f4f5] hover:text-[#0e1c2b] dark:hover:bg-[#233141] dark:hover:text-white"
                   href={content.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -899,7 +914,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
                   </svg>
                 </a>
                 <a
-                  className="flex h-14 w-14 items-center justify-center rounded-md border border-[color:rgb(198_197_212/.3)] transition-colors hover:bg-[#f3f4f5] hover:text-[#0e1c2b]"
+                  className="flex h-14 w-14 items-center justify-center rounded-md border border-[color:rgb(198_197_212/.3)] transition-colors hover:bg-[#f3f4f5] hover:text-[#0e1c2b] dark:hover:bg-[#233141] dark:hover:text-white"
                   href={content.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -917,16 +932,16 @@ export default function PageContent({ initialContent }: PageContentProps) {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="w-full border-t border-[#d9dadb] bg-[#f8f9fa] py-12">
+      <footer className="w-full border-t border-[#d9dadb] bg-[#f8f9fa] py-12 dark:border-[#1e3040] dark:bg-[#09131c]">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-8 md:flex-row">
-          <div className="font-heading text-lg font-bold text-blue-900">
+          <div className="font-heading text-lg font-bold text-blue-900 dark:text-[#4cd6ff]">
             <EditableText
               value={content.footerName}
               onSave={(v) => update({ footerName: v })}
               as="span"
             />
           </div>
-          <div className="text-sm tracking-wide text-slate-600">
+          <div className="text-sm tracking-wide text-slate-600 dark:text-[#8ba8c4]">
             <EditableText
               value={content.footerCopyright}
               onSave={(v) => update({ footerCopyright: v })}
@@ -937,7 +952,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
             {content.footerLinks.map((link, idx) => (
               <a
                 key={idx}
-                className="text-sm text-slate-600 underline underline-offset-4 transition-colors hover:text-blue-700"
+                className="text-sm text-slate-600 underline underline-offset-4 transition-colors hover:text-blue-700 dark:text-[#8ba8c4] dark:hover:text-[#4cd6ff]"
                 href={link.href}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               >

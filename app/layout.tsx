@@ -71,8 +71,15 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${headingFont.variable} ${bodyFont.variable} h-full scroll-smooth antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        {/* Anti-FOUC: set dark class before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t==null&&window.matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})()`,
+          }}
+        />
         <AdminProvider initialContent={defaultContent}>
           {children}
         </AdminProvider>
