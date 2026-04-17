@@ -26,6 +26,9 @@ import { useAdmin } from "@/components/admin/AdminContext";
 import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
 import { AddProjectModal } from "@/components/admin/AddProjectModal";
+import { BackgroundSelector } from "@/components/admin/BackgroundSelector";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { GridPattern } from "@/components/ui/grid-pattern";
 import { AddRoleModal } from "@/components/admin/AddRoleModal";
 import { AddAwardModal } from "@/components/admin/AddAwardModal";
 import type { SiteContent, Project, ExperienceRole, Award } from "@/lib/content";
@@ -176,8 +179,38 @@ export default function PageContent({ initialContent }: PageContentProps) {
     update({ awards: content.awards.filter((_, i) => i !== idx) });
   }
 
+  const bgStyle = content.backgroundStyle ?? "plain";
+  const renderPattern = () => {
+    if (bgStyle === "dots") {
+      return (
+        <DotPattern
+          width={22}
+          height={22}
+          cr={1}
+          className="text-[#0e1c2b]/12 dark:text-[#4cd6ff]/15 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]"
+        />
+      );
+    }
+    if (bgStyle === "grid") {
+      return (
+        <GridPattern
+          width={40}
+          height={40}
+          className="stroke-[#0e1c2b]/10 dark:stroke-[#4cd6ff]/10 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <>
+      {isAdmin && (
+        <BackgroundSelector
+          value={bgStyle}
+          onChange={(v) => update({ backgroundStyle: v })}
+        />
+      )}
       <BackgroundPaths title={content.heroTitle} />
 
       <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-md dark:border-slate-700/60 dark:bg-[#0c1a27]/95">
@@ -386,8 +419,9 @@ export default function PageContent({ initialContent }: PageContentProps) {
         </section>
 
         {/* ── Skills ───────────────────────────────────────────────────────── */}
-        <section className="bg-[#f3f4f5] py-24 dark:bg-[#09131c]">
-          <div className="mx-auto max-w-7xl px-8">
+        <section className="relative overflow-hidden bg-[#f3f4f5] py-24 dark:bg-[#09131c]">
+          {renderPattern()}
+          <div className="relative z-10 mx-auto max-w-7xl px-8">
             <div className="mb-16 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div className="max-w-xl">
                 <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28] dark:text-[#4cd6ff]">
@@ -589,8 +623,9 @@ export default function PageContent({ initialContent }: PageContentProps) {
         </section>
 
         {/* ── Projects ─────────────────────────────────────────────────────── */}
-        <section id="projects" className="bg-[#f3f4f5] py-24 dark:bg-[#09131c]">
-          <div className="mx-auto max-w-7xl px-8">
+        <section id="projects" className="relative overflow-hidden bg-[#f3f4f5] py-24 dark:bg-[#09131c]">
+          {renderPattern()}
+          <div className="relative z-10 mx-auto max-w-7xl px-8">
             <div className="mb-16">
               <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#001f28] dark:text-[#4cd6ff]">
                 <EditableText
