@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AdminProvider } from "@/components/admin/AdminContext";
+import { CookieBanner } from "@/components/CookieBanner";
 import { defaultContent } from "@/lib/content";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -75,6 +76,7 @@ export default function RootLayout({
         <AdminProvider initialContent={defaultContent}>
           {children}
         </AdminProvider>
+        <CookieBanner />
         <SpeedInsights />
       </body>
     </html>
