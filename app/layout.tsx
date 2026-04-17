@@ -24,7 +24,7 @@ const bodyFont = Inter({
   fallback: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"],
 });
 
-const BASE_URL = "https://ethancarn.dev";
+const BASE_URL = "https://ethan-carn.work";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
