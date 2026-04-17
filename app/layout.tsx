@@ -28,28 +28,50 @@ const BASE_URL = "https://ethan-carn.work";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "Ethan Carn | Information Systems Portfolio",
+  title: {
+    default: "Ethan Carn | Data Analytics & Information Systems",
+    template: "%s | Ethan Carn",
+  },
   description:
-    "Personal portfolio for Ethan Carn, an Information Systems student at BYU focused on data analytics and full-stack development.",
+    "Ethan Carn — Information Systems student at BYU Marriott School of Business. Specializing in data analytics, full-stack development, Python, SQL, and Tableau. 3.98 GPA, full-tuition scholar.",
   keywords: [
     "Ethan Carn",
+    "Ethan W Carn",
+    "ethanwcarn",
     "Information Systems",
     "BYU",
     "Brigham Young University",
+    "Marriott School of Business",
     "Data Analytics",
     "Full-Stack Development",
     "Tableau",
     "SQL",
     "Python",
+    "AWS",
     "Portfolio",
+    "Provo Utah",
   ],
-  authors: [{ name: "Ethan Carn" }],
+  authors: [{ name: "Ethan Carn", url: BASE_URL }],
+  creator: "Ethan Carn",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
   openGraph: {
-    title: "Ethan Carn | Information Systems Portfolio",
+    title: "Ethan Carn | Data Analytics & Information Systems",
     description:
-      "Information Systems student at BYU specializing in data analytics and full-stack development.",
-    type: "website",
+      "BYU Information Systems student specializing in data analytics, full-stack development, and business intelligence. 3.98 GPA | Full-tuition scholar.",
+    type: "profile",
     url: BASE_URL,
+    siteName: "Ethan Carn Portfolio",
+    firstName: "Ethan",
+    lastName: "Carn",
+    username: "ethanwcarn",
+    gender: "male",
     images: [
       {
         url: "/ethan-professional-headshot.jpg",
@@ -61,11 +83,33 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ethan Carn | Information Systems Portfolio",
+    title: "Ethan Carn | Data Analytics & Information Systems",
     description:
-      "Information Systems student at BYU specializing in data analytics and full-stack development.",
+      "BYU Information Systems student specializing in data analytics, full-stack development, and business intelligence.",
     images: ["/ethan-professional-headshot.jpg"],
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Ethan Carn",
+  alternateName: "Ethan W. Carn",
+  url: BASE_URL,
+  image: `${BASE_URL}/ethan-professional-headshot.jpg`,
+  jobTitle: "Information Systems Student",
+  description:
+    "Information Systems student at Brigham Young University's Marriott School of Business, specializing in data analytics and full-stack development.",
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Brigham Young University",
+    url: "https://www.byu.edu",
+  },
+  knowsAbout: ["Data Analytics", "Python", "SQL", "Tableau", "AWS", "Full-Stack Development", "Machine Learning"],
+  sameAs: [
+    "https://www.linkedin.com/in/ethan-carn",
+    "https://github.com/ethanwcarn",
+  ],
 };
 
 export default function RootLayout({
@@ -79,6 +123,12 @@ export default function RootLayout({
       className={`${headingFont.variable} ${bodyFont.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         {/* Anti-FOUC: set dark class before first paint */}
         <script

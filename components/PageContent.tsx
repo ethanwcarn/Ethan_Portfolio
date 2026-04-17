@@ -385,7 +385,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
             </div>
 
             <div className="relative hidden lg:col-span-5 lg:block">
-              <div className="aspect-square rounded-full border border-[color:rgb(198_197_212/.2)] bg-[#f3f4f5] p-8 dark:bg-[#152333] dark:border-[#233141]">
+              <div className="aspect-square rounded-full border border-[color:rgb(198_197_212/.2)] bg-[#f3f4f5] p-3 dark:bg-[#152333] dark:border-[#233141]">
                 <div className="relative h-full w-full overflow-hidden rounded-full">
                   <Image
                     src={content.headshotSrc}
