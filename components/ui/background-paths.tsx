@@ -18,7 +18,7 @@ function FloatingPaths({ position }: { position: number }) {
 
   return (
     <div className="pointer-events-none absolute inset-0">
-      <svg className="h-full w-full text-slate-950" viewBox="0 0 696 316" fill="none">
+      <svg className="h-full w-full text-slate-950 dark:text-slate-300" viewBox="0 0 696 316" fill="none">
         <title>Background Paths</title>
         {paths.map((path) => (
           <motion.path
@@ -53,7 +53,7 @@ export function BackgroundPaths({
   const words = title.split(" ");
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white dark:bg-[#09131c]">
       <div className="absolute inset-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
@@ -80,7 +80,7 @@ export function BackgroundPaths({
                       stiffness: 150,
                       damping: 25,
                     }}
-                    className="inline-block bg-gradient-to-r from-neutral-900 to-neutral-700/80 bg-clip-text text-transparent"
+                    className="inline-block bg-gradient-to-r from-neutral-900 to-neutral-700/80 bg-clip-text text-transparent dark:from-white dark:to-white/80"
                   >
                     {letter}
                   </motion.span>
@@ -89,11 +89,11 @@ export function BackgroundPaths({
             ))}
           </p>
 
-          <div className="group relative inline-block overflow-hidden rounded-2xl bg-gradient-to-b from-black/10 to-white/10 p-px shadow-lg backdrop-blur-lg transition-shadow duration-300 hover:shadow-xl">
+          <div className="group relative inline-block overflow-hidden rounded-2xl bg-gradient-to-b from-black/10 to-white/10 p-px shadow-lg backdrop-blur-lg transition-shadow duration-300 hover:shadow-xl dark:from-white/10 dark:to-black/10">
             <Button
               asChild
               variant="ghost"
-              className="rounded-[1.15rem] border border-black/10 bg-white/95 px-8 py-6 text-lg font-semibold text-black transition-all duration-300 hover:bg-white hover:shadow-md group-hover:-translate-y-0.5"
+              className="rounded-[1.15rem] border border-black/10 bg-white/95 px-8 py-6 text-lg font-semibold text-black transition-all duration-300 hover:bg-white hover:shadow-md group-hover:-translate-y-0.5 dark:border-white/10 dark:bg-[#152333] dark:text-white dark:hover:bg-[#1a2a3a]"
             >
               <a href="#about">
                 <span className="opacity-90 transition-opacity group-hover:opacity-100">
