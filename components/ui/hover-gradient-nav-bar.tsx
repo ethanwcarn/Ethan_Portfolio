@@ -126,8 +126,8 @@ function HoverGradientNavBar({
 
   const navClass =
     mode === 'inline'
-      ? 'w-fit mx-auto px-2 py-2 rounded-3xl bg-white/90 backdrop-blur-lg border border-gray-200/80 shadow-lg relative'
-      : 'w-full md:w-fit mx-auto px-2 md:px-4 py-2 md:py-3 rounded-none md:rounded-3xl bg-white/90 dark:bg-black/80 backdrop-blur-lg border-t md:border border-gray-200/80 dark:border-gray-800/80 shadow-lg md:shadow-xl relative';
+      ? 'w-fit mx-auto px-2 py-2 rounded-3xl bg-white/90 dark:bg-[#152333]/90 backdrop-blur-lg border border-gray-200/80 dark:border-[#233141]/80 shadow-lg relative'
+      : 'w-full md:w-fit mx-auto px-2 md:px-4 py-2 md:py-3 rounded-none md:rounded-3xl bg-white/90 dark:bg-[#152333]/90 backdrop-blur-lg border-t md:border border-gray-200/80 dark:border-[#233141]/80 shadow-lg md:shadow-xl relative';
 
   return (
     <div className={wrapperClass}>
