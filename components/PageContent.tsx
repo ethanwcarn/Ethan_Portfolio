@@ -31,6 +31,7 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { GridPattern } from "@/components/ui/grid-pattern";
 import { AddRoleModal } from "@/components/admin/AddRoleModal";
 import { AddAwardModal } from "@/components/admin/AddAwardModal";
+import { MobileDrawer } from "@/components/ui/mobile-drawer";
 import type { SiteContent, Project, ExperienceRole, Award } from "@/lib/content";
 
 interface PageContentProps {
@@ -40,6 +41,7 @@ interface PageContentProps {
 export default function PageContent({ initialContent }: PageContentProps) {
   const { isAdmin, content: ctxContent, setContent: setCtxContent } = useAdmin();
   const { isDark, toggle: toggleTheme } = useTheme();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [localContent, setLocalContent] = useState<SiteContent>(initialContent);
 
   // When admin activates, seed context with the server-fetched content (not hardcoded defaults)
@@ -211,6 +213,13 @@ export default function PageContent({ initialContent }: PageContentProps) {
           onChange={(v) => update({ backgroundStyle: v })}
         />
       )}
+      <MobileDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        isDark={isDark}
+        onToggleTheme={() => { toggleTheme(); setDrawerOpen(false); }}
+        resumeUrl={content.resumeUrl}
+      />
       <BackgroundPaths title={content.heroTitle} />
 
       <nav className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-md dark:border-slate-700/60 dark:bg-[#0c1a27]/95">
@@ -289,6 +298,7 @@ export default function PageContent({ initialContent }: PageContentProps) {
             {/* Mobile hamburger menu */}
             <button
               aria-label="Open navigation menu"
+              onClick={() => setDrawerOpen(true)}
               className="flex items-center justify-center p-1 md:hidden"
             >
               <Menu className="text-[#0e1c2b] dark:text-slate-300" size={22} />
