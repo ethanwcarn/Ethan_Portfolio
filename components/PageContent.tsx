@@ -26,7 +26,8 @@ import { EditableText } from "@/components/admin/EditableText";
 import { ResumeUpload } from "@/components/admin/ResumeUpload";
 import { AddProjectModal } from "@/components/admin/AddProjectModal";
 import { AddRoleModal } from "@/components/admin/AddRoleModal";
-import type { SiteContent, Project, ExperienceRole } from "@/lib/content";
+import { AddAwardModal } from "@/components/admin/AddAwardModal";
+import type { SiteContent, Project, ExperienceRole, Award } from "@/lib/content";
 
 interface PageContentProps {
   initialContent: SiteContent;
@@ -160,6 +161,17 @@ export default function PageContent({ initialContent }: PageContentProps) {
 
   function deleteRole(idx: number) {
     update({ experienceRoles: content.experienceRoles.filter((_, i) => i !== idx) });
+  }
+
+  const [showAddAward, setShowAddAward] = useState(false);
+
+  function addAward(award: Award) {
+    update({ awards: [...content.awards, award] });
+    setShowAddAward(false);
+  }
+
+  function deleteAward(idx: number) {
+    update({ awards: content.awards.filter((_, i) => i !== idx) });
   }
 
   return (
@@ -759,15 +771,15 @@ export default function PageContent({ initialContent }: PageContentProps) {
               </h2>
               <ul className="space-y-6">
                 {content.awards.map((award, idx) => (
-                  <li key={idx} className="flex items-start gap-4">
+                  <li key={idx} className="group/award flex items-start gap-4">
                     {idx === 0 ? (
                       <Sparkles className="mt-0.5 shrink-0 text-[var(--tertiary)]" />
-                    ) : idx === 2 ? (
+                    ) : award.title.toLowerCase().includes("hackathon") || award.title.toLowerCase().includes("place") ? (
                       <svg className="mt-0.5 shrink-0 text-[var(--tertiary)]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
                     ) : (
                       <Megaphone className="mt-0.5 shrink-0 text-[var(--tertiary)]" />
                     )}
-                    <div>
+                    <div className="flex-1">
                       <p className="font-heading font-bold text-[var(--primary)]">
                         <EditableText
                           value={award.title}
@@ -783,9 +795,37 @@ export default function PageContent({ initialContent }: PageContentProps) {
                         />
                       </p>
                     </div>
+                    {isAdmin && (
+                      <button
+                        onClick={() => deleteAward(idx)}
+                        aria-label={`Delete ${award.title}`}
+                        className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-600 text-white opacity-0 shadow transition-opacity group-hover/award:opacity-100 hover:bg-red-700"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
+              {isAdmin && (
+                <div className="mt-6">
+                  <button
+                    onClick={() => setShowAddAward(true)}
+                    className="flex items-center gap-2 rounded-md px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors"
+                    style={{
+                      border: "1.5px dashed #4cd6ff",
+                      color: "#4cd6ff",
+                      background: "rgba(76,214,255,0.06)",
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Award
+                  </button>
+                </div>
+              )}
+              {showAddAward && (
+                <AddAwardModal onAdd={addAward} onClose={() => setShowAddAward(false)} />
+              )}
             </div>
           </div>
         </section>
